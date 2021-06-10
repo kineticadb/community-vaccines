@@ -22,6 +22,28 @@ def cleanse(in_str):
     out_str.replace("'", "")
     return out_str
 
+# TODO: this is just a rough measure, a stand-in for now
+# https://stackoverflow.com/questions/19412462/getting-distance-between-two-points-based-on-latitude-longitude
+def rough_distance(slon, slat, dlon, dlat):
+    from math import sin, cos, sqrt, atan2, radians
+
+    # approximate radius of earth in km
+    R = 6373.0
+
+    lat1 = radians(float(slat))
+    lon1 = radians(float(slon))
+    lat2 = radians(float(dlat))
+    lon2 = radians(float(dlon))
+
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+
+    a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+    distance = R * c
+    return distance    
+
 def main():
 
     lookup_airport = {}
@@ -60,6 +82,9 @@ def main():
         if str(row['DEST_AIRPORT_ID']) not in lookup_airport:
             print(f"Warn {row['SOURCE_AIRPORT_ID']} not found in Airports lookup table, skipping...")
             continue
+        if lookup_airport[row['SOURCE_AIRPORT_ID']]['COUNTRY'] == lookup_airport[row['DEST_AIRPORT_ID']]['COUNTRY']:
+            # skipping domestic flight
+            continue
         slon = lookup_airport[row['SOURCE_AIRPORT_ID']]['LONGITUDE']
         slat = lookup_airport[row['SOURCE_AIRPORT_ID']]['LATITUDE']
         dlon = lookup_airport[row['DEST_AIRPORT_ID']]['LONGITUDE']
@@ -79,7 +104,7 @@ def main():
             "EDGE_NODE2_NAME": f"{lookup_airport[row['DEST_AIRPORT_ID']]['IATA']}: {lookup_airport[row['DEST_AIRPORT_ID']]['NAME']}",
             "EDGE_DIRECTION": "0",
             "EDGE_LABEL": f"'{row['AIRLINE']} {row['AIRLINE_ID']} from {lookup_airport[row['SOURCE_AIRPORT_ID']]['IATA']} --> {lookup_airport[row['DEST_AIRPORT_ID']]['IATA']}'",
-            "EDGE_WEIGHT_VALUESPECIFIED": 1
+            "EDGE_WEIGHT_VALUESPECIFIED": rough_distance(slon, slat, dlon, dlat)
         }
         inter_airport_network_edges.append(persistable)
         print(f"Adding edge {persistable['EDGE_LABEL']}")
