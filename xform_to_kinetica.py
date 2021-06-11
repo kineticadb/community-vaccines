@@ -2,20 +2,41 @@ import csv
 from time import sleep
 
 
-
-print("This is my file to demonstrate best practices.")
-
-def process_data(data):
-    print("Beginning data processing...")
-    modified_data = data + " that has been modified"
-    sleep(3)
-    print("Data processing finished.")
-    return modified_data
-
-# https://docs.kinetica.com/7.1/graph_solver/network_graph_solver/
 # https://openflights.org/data.html#route
+INPUT_FILE_AIRPORTS = "data/airports.csv"
+INPUT_FILE_ROUTES = "data/routes.csv"
+# https://docs.kinetica.com/7.1/graph_solver/network_graph_solver/
+OUTPUT_FILE_NODES = "out_nodes.csv"
+OUTPUT_FILE_EDGES = "out_edges.csv"
 
+FIELDS_NODES = ["NODE_ID",
+                "NODE_X",
+                "NODE_Y",
+                "NODE_NAME",
+                "NODE_WKTPOINT",
+                "NODE_LABEL",
+                "IATA",
+                "ICAO",
+                "CITY",
+                "COUNTRY"]
 
+FIELDS_EDGES = ["EDGE_ID",
+                "EDGE_NODE1_ID",
+                "EDGE_NODE2_ID",
+                "EDGE_WKTLINE",
+                "EDGE_NODE1_X",
+                "EDGE_NODE1_Y",
+                "EDGE_NODE2_X",
+                "EDGE_NODE2_Y",
+                "EDGE_NODE1_WKTPOINT",
+                "EDGE_NODE2_WKTPOINT",
+                "EDGE_NODE1_NAME",
+                "EDGE_NODE2_NAME",
+                "EDGE_DIRECTION",
+                "EDGE_LABEL",
+                "EDGE_WEIGHT_VALUESPECIFIED"]
+
+# Helper function to simplify strings
 def cleanse(in_str):
     out_str = in_str
     out_str.replace(",", "")
@@ -26,29 +47,25 @@ def cleanse(in_str):
 # https://stackoverflow.com/questions/19412462/getting-distance-between-two-points-based-on-latitude-longitude
 def rough_distance(slon, slat, dlon, dlat):
     from math import sin, cos, sqrt, atan2, radians
-
     # approximate radius of earth in km
     R = 6373.0
-
     lat1 = radians(float(slat))
     lon1 = radians(float(slon))
     lat2 = radians(float(dlat))
     lon2 = radians(float(dlon))
-
     dlon = lon2 - lon1
     dlat = lat2 - lat1
-
     a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
-
     distance = R * c
     return distance    
 
 def main():
 
     lookup_airport = {}
+    airport_nodes = []
 
-    input_file = csv.DictReader(open("data/airports.csv"))
+    input_file = csv.DictReader(open(INPUT_FILE_AIRPORTS))
     for row in input_file:
         lookup_airport[row['AIRPORT_ID']] = {
             'AIRPORT_ID': row['AIRPORT_ID'],
@@ -60,14 +77,54 @@ def main():
             'LATITUDE': row['LATITUDE'],
             'LONGITUDE': row['LONGITUDE']
         }
+    
+        if row['AIRPORT_ID'] == "\\N":
+            continue
+        nlon = row['LONGITUDE']
+        nlat = row['LATITUDE']
+        if row['IATA']=="\\N":
+            row['IATA']=None
+            nodename = f"{row['ICAO']}: {cleanse(row['NAME'])}"
+            nodelabel = f"{row['ICAO']}: {cleanse(row['NAME'])}; {cleanse(row['CITY'])}, {cleanse(row['COUNTRY'])}"
+        else:
+            nodename = f"{row['IATA']}: {cleanse(row['NAME'])}"
+            nodelabel = f"{row['IATA']}: {cleanse(row['NAME'])}; {cleanse(row['CITY'])}, {cleanse(row['COUNTRY'])}"
 
-    #print(lookup_airport)
+        persistable = {
+            "NODE_ID": row['AIRPORT_ID'],
+            "NODE_X": nlon,
+            "NODE_Y": nlat,
+            "NODE_NAME": nodename,
+            "NODE_WKTPOINT": f"POINT({nlon} {nlat})",
+            "NODE_LABEL": nodelabel,
+            "IATA": row['IATA'],
+            "ICAO": row['ICAO'],
+            "CITY": cleanse(row['CITY']),
+            "COUNTRY": cleanse(row['COUNTRY'])
+        }
+        airport_nodes.append(persistable)
+        print(f"Adding node {persistable['NODE_LABEL']}")
+
+    print(f"Writing {len(airport_nodes)} rows")
+
+    with open('out_nodes.csv', 'w', newline='\n') as csvfile:        
+        writer = csv.DictWriter(csvfile, fieldnames=FIELDS_NODES)
+        writer.writeheader()
+        for n in airport_nodes:
+            writer.writerow(n)
+
+
+
+
+
+
+
 
 
     inter_airport_network_edges = []
     edge_id = 10000
 
-    input_file = csv.DictReader(open("data/routes.csv"))
+    input_file = csv.DictReader(open(INPUT_FILE_ROUTES))
     for row in input_file:
         edge_id = edge_id + 1
         if row['SOURCE_AIRPORT_ID'] == "\\N":
@@ -111,24 +168,8 @@ def main():
 
     print(f"Writing {len(inter_airport_network_edges)} rows")
 
-    with open('out_edges.csv', 'w', newline='\n') as csvfile:
-        fieldnames = ["EDGE_ID",
-            "EDGE_NODE1_ID",
-            "EDGE_NODE2_ID",
-            "EDGE_WKTLINE",
-            "EDGE_NODE1_X",
-            "EDGE_NODE1_Y",
-            "EDGE_NODE2_X",
-            "EDGE_NODE2_Y",
-            "EDGE_NODE1_WKTPOINT",
-            "EDGE_NODE2_WKTPOINT",
-            "EDGE_NODE1_NAME",
-            "EDGE_NODE2_NAME",
-            "EDGE_DIRECTION",
-            "EDGE_LABEL",
-            "EDGE_WEIGHT_VALUESPECIFIED"]
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
+    with open('out_edges.csv', 'w', newline='\n') as csvfile:        
+        writer = csv.DictWriter(csvfile, fieldnames=FIELDS_EDGES)
         writer.writeheader()
         for i in inter_airport_network_edges:
             writer.writerow(i)
