@@ -1,13 +1,18 @@
 import csv
-from time import sleep
 
+## ------------------------------------------------------------------------
+## Execution parameters
 
 # https://openflights.org/data.html#route
 INPUT_FILE_AIRPORTS = "data/airports.csv"
 INPUT_FILE_ROUTES = "data/routes.csv"
+
 # https://docs.kinetica.com/7.1/graph_solver/network_graph_solver/
 OUTPUT_FILE_NODES = "out_nodes.csv"
 OUTPUT_FILE_EDGES = "out_edges.csv"
+
+## ------------------------------------------------------------------------
+
 
 FIELDS_NODES = ["NODE_ID",
                 "NODE_X",
@@ -65,6 +70,9 @@ def main():
     lookup_airport = {}
     airport_nodes = []
 
+    ## ------------------------------------------------------------------------
+    ## Create Lookup table for Edge Enrichment
+
     input_file = csv.DictReader(open(INPUT_FILE_AIRPORTS))
     for row in input_file:
         lookup_airport[row['AIRPORT_ID']] = {
@@ -77,7 +85,10 @@ def main():
             'LATITUDE': row['LATITUDE'],
             'LONGITUDE': row['LONGITUDE']
         }
-    
+
+        ## ------------------------------------------------------------------------
+        ## Create Nodes
+
         if row['AIRPORT_ID'] == "\\N":
             continue
         nlon = row['LONGITUDE']
@@ -103,23 +114,18 @@ def main():
             "COUNTRY": cleanse(row['COUNTRY'])
         }
         airport_nodes.append(persistable)
-        print(f"Adding node {persistable['NODE_LABEL']}")
+        #print(f"Adding node {persistable['NODE_LABEL']}")
 
     print(f"Writing {len(airport_nodes)} rows")
 
-    with open('out_nodes.csv', 'w', newline='\n') as csvfile:        
+    with open(OUTPUT_FILE_NODES, 'w', newline='\n') as csvfile:        
         writer = csv.DictWriter(csvfile, fieldnames=FIELDS_NODES)
         writer.writeheader()
         for n in airport_nodes:
             writer.writerow(n)
 
-
-
-
-
-
-
-
+    ## ------------------------------------------------------------------------
+    ## Create Edges
 
     inter_airport_network_edges = []
     edge_id = 10000
@@ -137,7 +143,7 @@ def main():
             print(f"Warn source airport {row['SOURCE_AIRPORT_ID']} not found in Airports lookup table, skipping...")
             continue
         if str(row['DEST_AIRPORT_ID']) not in lookup_airport:
-            print(f"Warn {row['SOURCE_AIRPORT_ID']} not found in Airports lookup table, skipping...")
+            print(f"Warn destination airport {row['SOURCE_AIRPORT_ID']} not found in Airports lookup table, skipping...")
             continue
         if lookup_airport[row['SOURCE_AIRPORT_ID']]['COUNTRY'] == lookup_airport[row['DEST_AIRPORT_ID']]['COUNTRY']:
             # skipping domestic flight
@@ -164,11 +170,11 @@ def main():
             "EDGE_WEIGHT_VALUESPECIFIED": rough_distance(slon, slat, dlon, dlat)
         }
         inter_airport_network_edges.append(persistable)
-        print(f"Adding edge {persistable['EDGE_LABEL']}")
+        #print(f"Adding edge {persistable['EDGE_LABEL']}")
 
     print(f"Writing {len(inter_airport_network_edges)} rows")
 
-    with open('out_edges.csv', 'w', newline='\n') as csvfile:        
+    with open(OUTPUT_FILE_EDGES, 'w', newline='\n') as csvfile:        
         writer = csv.DictWriter(csvfile, fieldnames=FIELDS_EDGES)
         writer.writeheader()
         for i in inter_airport_network_edges:
