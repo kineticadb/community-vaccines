@@ -38,4 +38,4 @@ jupyter notebook
 ```
 
 ## Credits
-- Kaan Karamente; Saif Ahmed; Matt Brown; Chad Meley (info@kinetica.com)
+- Kaan Karamete; Saif Ahmed; Matt Brown; Chad Meley (info@kinetica.com)
