@@ -1,20 +1,10 @@
-<!-- LOGO -->
-<br />
-<h1>
-<p align="center">
-  <img src="https://2wz2rk1b7g6s3mm3mk3dj0lh-wpengine.netdna-ssl.com/wp-content/uploads/2018/08/kinetica_logo.svg" alt="Logo" width="140" height="110">
-  <br>Vaccine Excess Supply Delivery
-</h1>
-  <p align="center">
-    Exploring logistics in the context of COVID vaccinations.
-    <br />
-    </p>
-</p>
 
-<p align="center"> 
+![Kinetica](https://2wz2rk1b7g6s3mm3mk3dj0lh-wpengine.netdna-ssl.com/wp-content/uploads/2018/08/kinetica_logo.svg)
+# Vaccine Excess Supply Delivery
+###   Exploring logistics in the context of COVID vaccinations.
 ![caption](images/routes.png)
-</p>                                                                                                                             
-                                                                                                                                                      
+
+
 ## About The Project
 We've all heard of the Traveling Salesperson Problem(1), it is one of the most common Graph problems and has numerous implementations. In the practice, however, problems are much more complicated. In the world of logistics, a more realistic setup is typicall the Multiple Supply Demand Chain Optimization (MSDO), where there are multiple sources and sinks and we're looking for the most optimal delivery routes. A generic overview can be seen here: https://www.kinetica.com/blog/kinetica-graph-analytics-multiple-supply-demand-chain-optimization-msdo-graph-solver/
 
@@ -40,4 +30,4 @@ jupyter notebook
 ```
 
 ## Credits
-- Kaan Karamete; Saif Ahmed; Matt Brown; Kyle Suttom; Chad Meley (info@kinetica.com)
+- Kaan Karamete; Saif Ahmed; Matt Brown; Kyle Sutton; Chad Meley (info@kinetica.com)
