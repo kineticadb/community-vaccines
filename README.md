@@ -1,8 +1,8 @@
 
-![Kinetica](https://2wz2rk1b7g6s3mm3mk3dj0lh-wpengine.netdna-ssl.com/wp-content/uploads/2018/08/kinetica_logo.svg)
+<img src="https://2wz2rk1b7g6s3mm3mk3dj0lh-wpengine.netdna-ssl.com/wp-content/uploads/2018/08/kinetica_logo.svg" alt="Kinetica Logo" width="300"/>
 # Vaccine Excess Supply Delivery
 ###   Exploring logistics in the context of COVID vaccinations.
-![caption](images/routes.png)
+![Global Supply Routes](images/routes.jpg)
 
 
 ## About The Project
