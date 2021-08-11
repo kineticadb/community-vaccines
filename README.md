@@ -46,7 +46,7 @@ The [Jupyter notebook](https://github.com/kineticadb/community-vaccines/blob/mas
 
 ## Quick Test Run: Single Source --> Multiple Destinations
 
-You can see some results below, but we encourge you to _run this yourself_ and tune the optimization per your liking. The best way is to run the [Jupyter Notebook https://github.com/kineticadb/community-vaccines/blob/master/start-here.ipynb](https://github.com/kineticadb/community-vaccines/blob/master/start-here.ipynb)
+You can see some results below, but we encourage you to _run this yourself_ and tune the optimization per your liking. The best way is to run the [Jupyter Notebook https://github.com/kineticadb/community-vaccines/blob/master/start-here.ipynb](https://github.com/kineticadb/community-vaccines/blob/master/start-here.ipynb)
 ![caption](images/pix1.png)
 ![caption](images/pix2.png)
 Finally, we plot out the full route we would use for the round-trip:
@@ -56,17 +56,18 @@ Finally, we plot out the full route we would use for the round-trip:
 
 ## Incremental Improvement: Two Sources --> Multiple Destinations
 
-This is good, but lets continue to refine this. We can add a second departure hub in the US to route vaccine supply from the south, lets set up both IAD (Washington Dulles Airport) and DFW (Dallas Forth Worth Airport.) There are a lot of possibilities here, and you can _customize this any way you wish_ -- the best way is to run the [Jupyter Notebook https://github.com/kineticadb/community-vaccines/blob/master/start-here.ipynb](https://github.com/kineticadb/community-vaccines/blob/master/start-here.ipynb)
+This is good, but lets continue to refine this. We can add a second departure hub in the US to route vaccine supply from the south, lets set up both IAD (Washington Dulles Airport) and DFW (Dallas Fort Worth Airport.) There are a lot of possibilities here, and you can _customize this any way you wish_ -- the best way is to run the [Jupyter Notebook https://github.com/kineticadb/community-vaccines/blob/master/start-here.ipynb](https://github.com/kineticadb/community-vaccines/blob/master/start-here.ipynb)
 
 ![caption](images/path_iad_dfw.png)
 
 ## Taking This Further
 
-Real life is complex. To make predictions or decisions, we create models to represent reality the best we can balancing trade-offs between correctness with complexity. So far, we've made a number of simplifying assumptions, but we can continue to refine the model to introduce more features and address nuances. Some reasonable next steps would be:
+Real life is complex. To make predictions or decisions, we create models to represent reality the best we can -- balancing trade-offs between correctness with complexity. So far, we've made a number of simplifying assumptions, but we can continue to refine the model to introduce more features and address nuances. Some reasonable next steps would be:
 
-* Come up with a more advanced supply model using CDC data but with more nuance around vaccine expirations, expected usage before expiration, etc.
-* Come up with a more advanced demand model using OWID data, but with your thoughts on prioritization schems -- do we prioritize the elderly population (more at risk), or prioritize the young (more likely to be outside and spread disease), or prioritize countries with the most deaths, or prioritize the countries with the least access to vaccination?
-* Add several more regional US centers, perhps one for the midwest (Chicago ORD) and one for the west (San Francisco SFO)
+* Start with the working [Jupyter Notebook](https://github.com/kineticadb/community-vaccines/blob/master/start-here.ipynb) and refine iteratively
+* Come up with a more advanced supply model using CDC data but with more nuance around vaccine expirations, expected usage before expiration, etc. (change the SQL view `vaccine_supply_usa`)
+* Come up with a more advanced demand model using OWID data, but with your thoughts on prioritization approaches -- do we prioritize the elderly population (more at risk), or prioritize the young (more likely to be outside and spread disease), or prioritize countries with the most deaths, or prioritize the countries with the least access to vaccination? (change the SQL view `vaccine_demand_intl`)
+* Add several more regional US centers, perhaps one for the midwest (Chicago ORD) and one for the west (San Francisco SFO). We have references to all the US airports, and you can use geodesic distance with SQL
 * Consider that multi-hop drop-offs themselves require time, and thus, consider how many days to expiration are required on vaccines beyond which we should avoid transporting them
 
 ## Contact Us
@@ -88,3 +89,5 @@ Real life is complex. To make predictions or decisions, we create models to repr
 1. [Travelling Salesperson Problem](https://en.wikipedia.org/wiki/Travelling_salesman_problem)
 2. [White House Fact Sheet: President Biden Announces Major Milestone in Administration’s Global Vaccination Efforts: More Than 100 Million U.S. COVID-⁠19 Vaccine Doses Donated and Shipped Abroad](https://www.whitehouse.gov/briefing-room/statements-releases/2021/08/03/fact-sheet-president-biden-announces-major-milestone-in-administrations-global-vaccination-efforts-more-than-100-million-u-s-covid-19-vaccine-doses-donated-and-shipped-abroad/)
 3. [Multiple Supply Demand Chain Optimization (MSDO)](https://github.com/kineticadb/community-vaccines/blob/master/start-here.ipynb)
+4. [YouTube: A short introduction to graph network analytics](https://www.youtube.com/watch?v=wUpeZbzbK4Y)
+5. [YouTube: An overview of graph network analysis with Kinetica](https://www.youtube.com/watch?v=tV_iMFDVQPU)
