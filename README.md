@@ -1,5 +1,6 @@
 
 <img src="https://2wz2rk1b7g6s3mm3mk3dj0lh-wpengine.netdna-ssl.com/wp-content/uploads/2018/08/kinetica_logo.svg" alt="Kinetica Logo" width="300"/>
+
 # Efficiently Donating Excess COVID Vaccine Supplies
 ###   Exploring logistics optimizations in the context of COVID vaccination donations
 by Kaan Karamete, Saif Ahmed, Matt Brown, Kyle Sutton, and Chad Meley
